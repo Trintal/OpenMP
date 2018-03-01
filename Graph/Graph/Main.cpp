@@ -20,16 +20,16 @@ enum sortingType { INCREASE };
 
 sortingType orderOfSorting;
 
-union BinaryDouble
+union BinaryInt
 {
-	double d;
+	int d;
 	unsigned char c[sizeof(double)];
 
-	BinaryDouble()
+	BinaryInt()
 	{
 		d = 0;
 	}
-	BinaryDouble(double doub)
+	BinaryInt(int doub)
 	{
 		d = doub;
 	}
@@ -43,25 +43,25 @@ void welcomeWords(int *size)
 	cin >> *size;
 }
 
-void initData(BinaryDouble **dataArray, int *size)
+void initData(BinaryInt **dataArray, int *size)
 {
-	*dataArray = new BinaryDouble[*size];
+	*dataArray = new BinaryInt[*size];
 	srand(time(NULL));
 	rand();
 	for (int i = 0; i < *size; i++)
 	{
-		(*dataArray)[i] = BinaryDouble((static_cast<double>(rand()) / RAND_MAX) * rand());
+		(*dataArray)[i] = BinaryInt(rand());
 	}
 }
 
-void copyData(BinaryDouble **src, BinaryDouble **dest, int *size)
+void copyData(BinaryInt **src, BinaryInt **dest, int *size)
 {
-	*dest = new BinaryDouble[*size];
+	*dest = new BinaryInt[*size];
 	for (int i = 0; i < *size; i++)
-		(*dest)[i] = BinaryDouble((*src)[i].d);
+		(*dest)[i] = BinaryInt((*src)[i].d);
 }
 
-void printArray(BinaryDouble **array, int *size)
+void printArray(BinaryInt **array, int *size)
 {
 	for (int i = 0; i < *size - 1; i++)
 	{
@@ -78,10 +78,10 @@ void outputMessage(double *time1, double *time2, bool isRight)
 		"Results are the same: " << isRight << "\n";
 }
 
-void RadixSort(queue<BinaryDouble> *data, queue<BinaryDouble> *sortedData, int *numOfByte, int *numOfBitInByte)
+void RadixSort(queue<BinaryInt> *data, queue<BinaryInt> *sortedData, int *numOfByte, int *numOfBitInByte)
 {
-	queue<BinaryDouble> queueZero;
-	queue<BinaryDouble> queueOne;
+	queue<BinaryInt> queueZero;
+	queue<BinaryInt> queueOne;
 
 	if (*numOfByte != -1)
 	{
@@ -100,7 +100,7 @@ void RadixSort(queue<BinaryDouble> *data, queue<BinaryDouble> *sortedData, int *
 		}
 		// recursive call must be outside of while loop above
 		*numOfByte = *numOfBitInByte == 1 ? --*numOfByte : *numOfByte;
-		*numOfBitInByte = *numOfBitInByte == 1 ? *numOfBitInByte = 128 : *numOfBitInByte = *numOfBitInByte / 2;
+		*numOfBitInByte = *numOfBitInByte == 1 ? *numOfBitInByte = 64 : *numOfBitInByte = *numOfBitInByte / 2;
 		int numOfByteCopy2 = *numOfByte;
 		int numOfBitInByteCopy2 = *numOfBitInByte;
 
@@ -122,16 +122,16 @@ void RadixSort(queue<BinaryDouble> *data, queue<BinaryDouble> *sortedData, int *
 	}
 }
 
-BinaryDouble* merge(BinaryDouble **firstArray, BinaryDouble **secondArray, int *sizeFirst, int *sizeSecond)
+BinaryInt* merge(BinaryInt **firstArray, BinaryInt **secondArray, int *sizeFirst, int *sizeSecond)
 {
-	BinaryDouble *sortedArray = new BinaryDouble[*sizeFirst + *sizeSecond];
+	BinaryInt *sortedArray = new BinaryInt[*sizeFirst + *sizeSecond];
 	int indexFirst = 0;
 	int indexSecond = 0;
 	int index = 0;
 	while ((indexFirst < *sizeFirst) && (indexSecond < *sizeSecond))
 	{
-		BinaryDouble elementFirst = (*firstArray)[indexFirst];
-		BinaryDouble elementSecond = (*secondArray)[indexSecond];
+		BinaryInt elementFirst = (*firstArray)[indexFirst];
+		BinaryInt elementSecond = (*secondArray)[indexSecond];
 		if (elementFirst.d < elementSecond.d)
 		{
 			sortedArray[index] = elementFirst;
@@ -161,7 +161,7 @@ BinaryDouble* merge(BinaryDouble **firstArray, BinaryDouble **secondArray, int *
 	return sortedArray;
 }
 
-void setResult(queue<BinaryDouble> *sortedData, BinaryDouble **data)
+void setResult(queue<BinaryInt> *sortedData, BinaryInt **data)
 {
 	int count = (*sortedData).size();
 	for (int i = 0; i < count; i++)
@@ -171,7 +171,7 @@ void setResult(queue<BinaryDouble> *sortedData, BinaryDouble **data)
 	}
 }
 
-bool checkResult(BinaryDouble **nonParallel, BinaryDouble **parallel, int *size)
+bool checkResult(BinaryInt **nonParallel, BinaryInt **parallel, int *size)
 {
 	for (int i = 0; i < *size; i++)
 	{
@@ -185,9 +185,9 @@ int main()
 {
 	cout.precision(15);
 	int size;
-	BinaryDouble *nonParallel = nullptr;
-	BinaryDouble *parallel = nullptr;
-	BinaryDouble *parallelCopy = nullptr;
+	BinaryInt *nonParallel = nullptr;
+	BinaryInt *parallel = nullptr;
+	BinaryInt *parallelCopy = nullptr;
 	int *sendCounts = nullptr;
 	int *displs = nullptr;
 	double startTime = 0;
@@ -207,12 +207,12 @@ int main()
 	startTime = clock();
 	cout << "[TRACE] Start time of non-parallel algorythm: " << startTime << "\n";
 
-	queue<BinaryDouble> queueData;
-	queue<BinaryDouble> sortedData;
+	queue<BinaryInt> queueData;
+	queue<BinaryInt> sortedData;
 	for (int i = 0; i < size; i++) {
 		queueData.push(nonParallel[i]);
 	}
-	int u = 7; int o = 128;
+	int u = 3; int o = 64;
 	RadixSort(&queueData, &sortedData, &u, &o);
 	cout << "[TRACE] Array was sorted by non-parallel algorythm \n";
 	setResult(&sortedData, &nonParallel);
